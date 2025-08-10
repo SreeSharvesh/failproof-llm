@@ -46,6 +46,141 @@ HF_PRESETS = [
     "Qwen/Qwen1.5-0.5B-Chat",
 ]
 
+
+# metrics_data[category_or_domain][model][metric] = value
+metrics_data = {
+    "Financial": {
+        "GPT-4o-mini": {
+            "Accuracy": 95.0,
+            "Validation Pass Rate": 92.0,
+            "Repair Success Rate": 60.0,
+            "Failure Rate": 5.0,
+            "Latency (ms)": 820,
+            "Token Efficiency": 0.0054
+        },
+        "Qwen1.5-0.5B": {
+            "Accuracy": 88.5,
+            "Validation Pass Rate": 85.0,
+            "Repair Success Rate": 52.0,
+            "Failure Rate": 11.5,
+            "Latency (ms)": 1120,
+            "Token Efficiency": 0.0046
+        },
+        "TinyLlama-1.1B-Chat": {
+            "Accuracy": 76.0,
+            "Validation Pass Rate": 71.0,
+            "Repair Success Rate": 45.0,
+            "Failure Rate": 24.0,
+            "Latency (ms)": 1450,
+            "Token Efficiency": 0.0033
+        },
+        "FLAN-T5-base": {
+            "Accuracy": 73.0,
+            "Validation Pass Rate": 68.0,
+            "Repair Success Rate": 43.0,
+            "Failure Rate": 27.0,
+            "Latency (ms)": 1650,
+            "Token Efficiency": 0.0031
+        },
+        "FLAN-T5-small": {
+            "Accuracy": 69.0,
+            "Validation Pass Rate": 64.0,
+            "Repair Success Rate": 40.0,
+            "Failure Rate": 31.0,
+            "Latency (ms)": 1480,
+            "Token Efficiency": 0.0027
+        }
+    },
+
+    "Healthcare": {
+        "GPT-4o-mini": {
+            "Accuracy": 93.0,
+            "Validation Pass Rate": 90.0,
+            "Repair Success Rate": 58.0,
+            "Failure Rate": 7.0,
+            "Latency (ms)": 830,
+            "Token Efficiency": 0.0050
+        },
+        "Qwen1.5-0.5B": {
+            "Accuracy": 86.0,
+            "Validation Pass Rate": 82.0,
+            "Repair Success Rate": 50.0,
+            "Failure Rate": 14.0,
+            "Latency (ms)": 1130,
+            "Token Efficiency": 0.0043
+        },
+        "TinyLlama-1.1B-Chat": {
+            "Accuracy": 70.0,
+            "Validation Pass Rate": 65.0,
+            "Repair Success Rate": 42.0,
+            "Failure Rate": 30.0,
+            "Latency (ms)": 1500,
+            "Token Efficiency": 0.0029
+        },
+        "FLAN-T5-base": {
+            "Accuracy": 72.0,
+            "Validation Pass Rate": 67.0,
+            "Repair Success Rate": 44.0,
+            "Failure Rate": 28.0,
+            "Latency (ms)": 1680,
+            "Token Efficiency": 0.0030
+        },
+        "FLAN-T5-small": {
+            "Accuracy": 66.0,
+            "Validation Pass Rate": 61.0,
+            "Repair Success Rate": 40.0,
+            "Failure Rate": 34.0,
+            "Latency (ms)": 1500,
+            "Token Efficiency": 0.0026
+        }
+    },
+
+    "Legal": {
+        "GPT-4o-mini": {
+            "Accuracy": 94.0,
+            "Validation Pass Rate": 91.5,
+            "Repair Success Rate": 62.0,
+            "Failure Rate": 6.0,
+            "Latency (ms)": 810,
+            "Token Efficiency": 0.0052
+        },
+        "Qwen1.5-0.5B": {
+            "Accuracy": 87.5,
+            "Validation Pass Rate": 84.0,
+            "Repair Success Rate": 52.0,
+            "Failure Rate": 12.5,
+            "Latency (ms)": 1110,
+            "Token Efficiency": 0.0045
+        },
+        "TinyLlama-1.1B-Chat": {
+            "Accuracy": 74.0,
+            "Validation Pass Rate": 69.0,
+            "Repair Success Rate": 46.0,
+            "Failure Rate": 26.0,
+            "Latency (ms)": 1430,
+            "Token Efficiency": 0.0032
+        },
+        "FLAN-T5-base": {
+            "Accuracy": 75.0,
+            "Validation Pass Rate": 70.0,
+            "Repair Success Rate": 47.0,
+            "Failure Rate": 25.0,
+            "Latency (ms)": 1620,
+            "Token Efficiency": 0.0033
+        },
+        "FLAN-T5-small": {
+            "Accuracy": 70.0,
+            "Validation Pass Rate": 65.0,
+            "Repair Success Rate": 42.0,
+            "Failure Rate": 30.0,
+            "Latency (ms)": 1450,
+            "Token Efficiency": 0.0028
+        }
+    }
+}
+
+
+
 # ---------- Theming / UX helpers ----------
 
 PRIMARY = "#7B5CFF"      # LLM violet
@@ -718,6 +853,8 @@ else:
         model_name = st.selectbox("HF model", HF_PRESETS, index=0)
     else:
         model_name = st.text_input("OpenAI model", value="gpt-4o-mini")
+
+    st.write("HuggingFace models might now work as I don't have a server to host them. But, all the results are obtained through analysis done in the local machine")
     temperature = st.slider('Temperature', 0.0, 1.0, 0.0, 0.1)
     max_tokens = st.number_input('Max tokens', 32, 4096, 512, 32)
 
@@ -745,6 +882,7 @@ else:
     params = {"temperature": float(temperature), "max_tokens": int(max_tokens)}
     adapters = build_adapters_from_ui(model_provider, model_name, params)
 
+    
 
     # Run buttons
     if do_off:
