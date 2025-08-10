@@ -29,6 +29,7 @@ from adapters.openai_adapter import OpenAIAdapter
 from generator.llm_dataset_gen import discover_templates, generate_from_template, generate_from_template_chunked
 from adapters.hf_adapter import HFAdapter
 
+HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 RUNS_DIR = "data/runs"
 SUITES_DIR = "data/suites"
