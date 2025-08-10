@@ -687,7 +687,7 @@ else:
         with st.spinner('Running OFF (repairs disabled)...'):
             run_experiment_sync(cases, adapters, run_dir, cfg)
         st.success(f"OFF run complete → {run_dir}")
-        remember_run(off_dir)
+        remember_run(run_dir)
 
     if do_on:
         ts = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -702,8 +702,7 @@ else:
         with st.spinner('Running ON (repairs enabled)...'):
             run_experiment_sync(cases, adapters, run_dir, cfg)
         st.success(f"ON run complete → {run_dir}")
-        on_dir = run_dir
-        remember_run(on_dir)
+        remember_run(run_dir)
 
     st.write('---')
 
