@@ -38,8 +38,8 @@ class HFAdapter:
         from_pretrained_kwargs = dict(
             torch_dtype=torch_dtype,
             low_cpu_mem_usage=False,
-            device_map=self.device,  # Force all weights to load on the specified device.
-            trust_remote_code=False,
+            device_map=None,  # Force all weights to load on the specified device.
+            trust_remote_code=True,
         )
 
 
