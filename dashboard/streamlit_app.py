@@ -807,7 +807,7 @@ if page == 'Home':
     )
     st.info('Tip: Start in **Dataset Studio** to create your suite, then head to **Run & Analyze**.')
 
-   st.subheader("Benchmark — Rows: Domains & Categories • Columns: Metrics (one box per model)")
+    st.subheader("Benchmark — Rows: Domains & Categories • Columns: Metrics (one box per model)")
 
     table_df = build_multiindex_table(metrics_data)
     st.dataframe(
