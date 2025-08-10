@@ -422,7 +422,7 @@ if page == 'Home':
     hero('FailProof LLM — Stress‑test AI with Edge Cases', 'Generate adversarial suites → run across models → analyze, explain, and harden.')
     st.markdown('     ')
 
-    st.write(torch.device)
+    st.write(param.device)
 
     
     st.markdown(
