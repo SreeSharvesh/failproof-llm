@@ -32,6 +32,8 @@ from adapters.openai_adapter import OpenAIAdapter
 from generator.llm_dataset_gen import discover_templates, generate_from_template, generate_from_template_chunked
 from adapters.hf_adapter import HFAdapter
 
+
+
 HF_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 RUNS_DIR = "data/runs"
@@ -137,6 +139,68 @@ def kpi(label: str, value: str, help_text: str = ""):
 # In-memory runs store: { run_dir: [records] }
 if "runs" not in st.session_state:
     st.session_state["runs"] = {}
+
+METRICS_ORDER = [
+    "Accuracy",
+    "Validation Pass Rate",
+    "Repair Success Rate",
+    "Failure Rate",
+    "Latency (ms)",
+    "Token Efficiency",
+    "Output Length Compliance",
+]
+
+# how to format each metric
+FMT = {
+    "Accuracy": "{:.1f}%",
+    "Validation Pass Rate": "{:.1f}%",
+    "Repair Success Rate": "{:.1f}%",
+    "Failure Rate": "{:.1f}%",
+    "Latency (ms)": "{:.0f}",
+    "Token Efficiency": "{:.4f}",
+    "Output Length Compliance": "{:.1f}%",
+}
+
+def build_model_cell(models_dict: dict, metric: str) -> str:
+    """Return a multi-line string with `Model: value` for one cell."""
+    lines = []
+    for model, met in models_dict.items():
+        if metric in met:
+            v = met[metric]
+            fmt = FMT.get(metric, "{}")
+            try:
+                lines.append(f"{model}: {fmt.format(v)}")
+            except Exception:
+                lines.append(f"{model}: {v}")
+    # sort lines by value desc for most metrics (except latency where lower is better)
+    def sort_key(line):
+        try:
+            num = float(line.split(":")[-1].strip().strip("%"))
+        except:
+            num = -1
+        # invert for latency so smaller is higher priority
+        if metric == "Latency (ms)":
+            return num  # ascending
+        return -num     # descending
+    lines_sorted = sorted(lines, key=sort_key)
+    return "\n".join(lines_sorted)
+
+def build_benchmark_table(metrics_data: dict) -> pd.DataFrame:
+    """
+    Rows = categories/domains, Columns = METRICS_ORDER,
+    Cell = multiline "Model: value"
+    """
+    categories = list(metrics_data.keys())
+    data = {m: [] for m in METRICS_ORDER}
+    index = []
+    for cat in categories:
+        index.append(cat)
+        for m in METRICS_ORDER:
+            cell = build_model_cell(metrics_data[cat], m)
+            data[m].append(cell)
+    df = pd.DataFrame(data, index=index)
+    return df
+
 
 def load_records_from_disk(run_dir: str) -> list[dict]:
     p = pathlib.Path(run_dir) / "results.jsonl"
@@ -535,6 +599,14 @@ if page == 'Home':
     )
     st.info('Tip: Start in **Dataset Studio** to create your suite, then head to **Run & Analyze**.')
 
+    st.subheader("Benchmark — Models × Metrics by Domain/Category")
+    table_df = build_benchmark_table(metrics_data)
+    st.dataframe(
+        table_df,
+        use_container_width=True,
+        height=300 + 20 * len(table_df),  # grow a bit with rows
+    )
+    st.caption("Each cell shows all models ranked for that metric within the category (best at top).")
 # ---- Dataset Studio ----
 elif page == 'Dataset Studio':
     hero('Dataset Studio', 'Generate validator-ready suites from rich templates.')
