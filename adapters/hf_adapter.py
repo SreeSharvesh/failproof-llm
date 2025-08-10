@@ -7,82 +7,62 @@ from transformers import (
     AutoTokenizer,
 )
 
-hf_token = st.secrets.get("HUGGINGFACE_API_KEY", None) or os.getenv("HUGGINGFACE_TOKEN")
-
 class HFAdapter:
     """
-    Minimal HF adapter compatible with your runner.
-    - Supports decoder-only chat models (TinyLlama, Qwen) and seq2seq (FLAN-T5).
-    - No device_map='auto' (avoids meta tensors); we pick one device and move model there.
-    - Respects 'force_json' only as a soft suffix (no server-side JSON mode on HF).
+    Safe CPU adapter (no accelerate, no meta).
+    - Forces CPU + float32 so it runs everywhere.
+    - Works with TinyLlama/Qwen (decoder-only) and Flan-T5 (seq2seq).
+    - 'force_json' is a soft hint; validators/repairs enforce structure.
     """
 
-    def __init__(self, model_name: str,hf_token: str | None = None, **defaults):
+    def __init__(self, model_name: str, **defaults):
         self.model_name = model_name
-        self.hf_token = hf_token
         self.defaults = {k: v for k, v in (defaults or {}).items() if k != "force_json"}
 
-        # Choose device and dtype safely
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-            # prefer bf16 if supported; else fp16
-            if torch.cuda.is_bf16_supported():
-                torch_dtype = torch.bfloat16
-            else:
-                torch_dtype = torch.float16
-        else:
-            self.device = torch.device("cpu")
-            torch_dtype = torch.float32
+        # Always CPU for stability first. (You can add a CUDA branch later if needed.)
+        self.device = torch.device("cpu")
+        torch_dtype = torch.float32
 
         # Detect seq2seq (T5) vs decoder-only
         self.is_seq2seq = "t5" in model_name.lower()
 
-        # Load tokenizer
-        self.tok = AutoTokenizer.from_pretrained(model_name, use_fast=True, use_auth_token=self.hf_token)
-        # Ensure pad_token_id is set (some small chat models lack it)
+        # Load tokenizer (ensure pad token)
+        self.tok = AutoTokenizer.from_pretrained(model_name, use_fast=True)
         if self.tok.pad_token_id is None:
-            # fall back to eos token
-            if self.tok.eos_token_id is not None:
-                self.tok.pad_token_id = self.tok.eos_token_id
+            if self.tok.eos_token_id is not None and self.tok.eos_token is not None:
+                self.tok.pad_token = self.tok.eos_token
             else:
-                # as a last resort
                 self.tok.add_special_tokens({"pad_token": "<|pad|>"})
 
-        # Load model on a single device (no device_map to avoid meta tensors)
+        # STRICT: load model without accelerate/lazy init
+        from_pretrained_kwargs = dict(
+            torch_dtype=torch_dtype,
+            low_cpu_mem_usage=False,   # critical: avoid meta tensors
+            device_map=None,           # critical: avoid accelerate meta sharding
+            trust_remote_code=False,
+        )
         if self.is_seq2seq:
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(
-                model_name,
-                torch_dtype=torch_dtype,
-                low_cpu_mem_usage=False,   # keep simple to avoid meta device surprises
-                trust_remote_code=False,
-                use_auth_token=self.hf_token,
-            )
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name, **from_pretrained_kwargs)
         else:
-            self.model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                torch_dtype=torch_dtype,
-                low_cpu_mem_usage=False,
-                trust_remote_code=False,
-                use_auth_token=self.hf_token,
-            )
+            self.model = AutoModelForCausalLM.from_pretrained(model_name, **from_pretrained_kwargs)
 
-        # Resize embeddings if we added a pad token
+        # If we added a pad token, resize embeddings BEFORE moving to device
         if len(self.tok) > self.model.get_input_embeddings().num_embeddings:
             self.model.resize_token_embeddings(len(self.tok))
 
-        # Move model to the chosen device and eval mode
+        # Move to CPU and verify no meta params remain
         self.model.to(self.device)
         self.model.eval()
+        for n, p in self.model.named_parameters():
+            if p.is_meta:
+                raise RuntimeError(f"Parameter on meta device after load: {n}")
 
-        # Cache EOS/PAD tokens
-        self.eos_token_id = self.tok.eos_token_id
-        self.pad_token_id = self.tok.pad_token_id
+        self.eos_id = self.tok.eos_token_id
+        self.pad_id = self.tok.pad_token_id
 
     def _build_prompt(self, prompt: str, force_json: bool) -> str:
-        # Soft hint only for JSON; small HF models can get confused by long meta text
-        if force_json:
-            return prompt.rstrip() + "\n\nRespond with JSON only."
-        return prompt
+        # Keep hint tiny for small models
+        return prompt.rstrip() + ("\n\nRespond with JSON only." if force_json else "")
 
     @torch.inference_mode()
     def generate(self, prompt: str, **overrides) -> Any:
@@ -91,9 +71,8 @@ class HFAdapter:
         max_tokens = int(params.get("max_tokens", 256))
         force_json = bool(params.get("force_json", False))
 
-        text = self._build_prompt(prompt, force_json=force_json)
+        text = self._build_prompt(prompt, force_json)
 
-        # Tokenize on same device
         inputs = self.tok(
             text,
             return_tensors="pt",
@@ -108,18 +87,16 @@ class HFAdapter:
             do_sample=(temperature > 0.0),
             temperature=max(temperature, 1e-6) if temperature > 0.0 else None,
             top_p=0.95 if temperature > 0.0 else None,
-            eos_token_id=self.eos_token_id,
-            pad_token_id=self.pad_token_id,
+            eos_token_id=self.eos_id,
+            pad_token_id=self.pad_id,
         )
         gen_kwargs = {k: v for k, v in gen_kwargs.items() if v is not None}
 
         try:
             out_ids = self.model.generate(**inputs, **gen_kwargs)
-
             if self.is_seq2seq:
                 output = self.tok.decode(out_ids[0], skip_special_tokens=True)
             else:
-                # For decoder-only, drop the prompt tokens when decoding
                 input_len = inputs["input_ids"].shape[1]
                 output = self.tok.decode(out_ids[0][input_len:], skip_special_tokens=True)
 
