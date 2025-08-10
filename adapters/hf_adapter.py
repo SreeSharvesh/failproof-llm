@@ -7,6 +7,8 @@ from transformers import (
     AutoTokenizer,
 )
 
+hf_token = st.secrets.get("HUGGINGFACE_API_KEY", None) or os.getenv("HUGGINGFACE_TOKEN")
+
 class HFAdapter:
     """
     Minimal HF adapter compatible with your runner.
@@ -15,8 +17,9 @@ class HFAdapter:
     - Respects 'force_json' only as a soft suffix (no server-side JSON mode on HF).
     """
 
-    def __init__(self, model_name: str, **defaults):
+    def __init__(self, model_name: str,hf_token: str | None = None, **defaults):
         self.model_name = model_name
+        self.hf_token = hf_token
         self.defaults = {k: v for k, v in (defaults or {}).items() if k != "force_json"}
 
         # Choose device and dtype safely
@@ -35,7 +38,7 @@ class HFAdapter:
         self.is_seq2seq = "t5" in model_name.lower()
 
         # Load tokenizer
-        self.tok = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+        self.tok = AutoTokenizer.from_pretrained(model_name, use_fast=True, use_auth_token=self.hf_token)
         # Ensure pad_token_id is set (some small chat models lack it)
         if self.tok.pad_token_id is None:
             # fall back to eos token
@@ -52,6 +55,7 @@ class HFAdapter:
                 torch_dtype=torch_dtype,
                 low_cpu_mem_usage=False,   # keep simple to avoid meta device surprises
                 trust_remote_code=False,
+                use_auth_token=self.hf_token,
             )
         else:
             self.model = AutoModelForCausalLM.from_pretrained(
@@ -59,6 +63,7 @@ class HFAdapter:
                 torch_dtype=torch_dtype,
                 low_cpu_mem_usage=False,
                 trust_remote_code=False,
+                use_auth_token=self.hf_token,
             )
 
         # Resize embeddings if we added a pad token
