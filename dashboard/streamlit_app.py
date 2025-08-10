@@ -395,6 +395,9 @@ def build_adapters_from_ui(provider: str, model_name: str, params: Dict[str, Any
         _params = dict(params)
         _params.pop("force_json", None)
         adapter = HFAdapter(model_name, **_params)
+
+        device = next(adapter.model.parameters()).device
+        st.write(f"🤖 Model loaded on device: {device}")
     else:
         raise ValueError('Unsupported provider')
     return {key: adapter}
@@ -555,7 +558,6 @@ else:
 
     params = {"temperature": float(temperature), "max_tokens": int(max_tokens)}
     adapters = build_adapters_from_ui(model_provider, model_name, params)
-    st.write(f"Model device: {next(self.model.parameters()).device}")
 
 
     # Run buttons
