@@ -282,7 +282,6 @@ METRICS_ORDER = [
     "Failure Rate",
     "Latency (ms)",
     "Token Efficiency",
-    "Output Length Compliance",
 ]
 
 # how to format each metric
@@ -293,7 +292,6 @@ FMT = {
     "Failure Rate": "{:.1f}%",
     "Latency (ms)": "{:.0f}",
     "Token Efficiency": "{:.4f}",
-    "Output Length Compliance": "{:.1f}%",
 }
 
 def build_model_cell(models_dict: dict, metric: str) -> str:
