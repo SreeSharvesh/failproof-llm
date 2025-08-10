@@ -1,0 +1,24 @@
+{
+  "by_family": {
+    "csv_strict": {
+      "count": 3,
+      "pass": 3,
+      "pass_rate": 1.0
+    },
+    "json_schema": {
+      "count": 1,
+      "pass": 1,
+      "pass_rate": 1.0
+    }
+  },
+  "taxonomy": {},
+  "latency": {
+    "p50": 2303.5,
+    "p95": 2673
+  },
+  "strategy_effectiveness": {
+    "flips_fail_to_pass": 0,
+    "fixed_by_strategy": {},
+    "repairs_used_counts": {}
+  }
+}

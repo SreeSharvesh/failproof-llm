@@ -1,0 +1,40 @@
+{
+  "by_family": {
+    "json_schema": {
+      "count": 10,
+      "pass": 9,
+      "pass_rate": 0.9
+    },
+    "csv_strict": {
+      "count": 10,
+      "pass": 5,
+      "pass_rate": 0.5
+    },
+    "html_snippet": {
+      "count": 10,
+      "pass": 10,
+      "pass_rate": 1.0
+    }
+  },
+  "taxonomy": {
+    "invalid_structure": 5,
+    "invalid_output": 1
+  },
+  "latency": {
+    "p50": 955.0,
+    "p95": 1708
+  },
+  "strategy_effectiveness": {
+    "flips_fail_to_pass": 16,
+    "fixed_by_strategy": {
+      "auto_repair_extract_json": 4,
+      "auto_repair_repair_csv": 5,
+      "auto_repair_repair_html": 7
+    },
+    "repairs_used_counts": {
+      "auto_repair_extract_json": 4,
+      "auto_repair_repair_csv": 5,
+      "auto_repair_repair_html": 7
+    }
+  }
+}

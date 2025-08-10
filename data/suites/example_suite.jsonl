@@ -1,0 +1,2 @@
+{"id":"c1","family":"json_schema","prompt":"Return a valid JSON object with fields {\"name\": string, \"age\": number}."}
+{"id":"c2","family":"json_schema","prompt":"Respond ONLY with JSON: {\"name\": \"Alice\", \"age\": 30}. No extra text."}

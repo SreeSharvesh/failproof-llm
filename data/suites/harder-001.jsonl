@@ -1,0 +1,4 @@
+{"id": "c006_hard_0", "family": "json_schema", "prompt": "```json\n{\n  \"n​ame\": \"Alice\",\n  \"a​ge\": 30\n}\n```", "expect": {}}
+{"id": "csv001_hard_0", "family": "csv_strict", "prompt": "name,amount,currency  \nAlice,1500.75,USD  \nBob,2300.50,EUR  \nCharlie,1200.00,GBP  ", "expect": {}}
+{"id": "csv004_hard_0", "family": "csv_strict", "prompt": "name,amount,currency  \nAlice,1500.75,USD  \nBob,2200.50,EUR  \nCharlie,3000.00,GBP  ", "expect": {}}
+{"id": "csv010_hard_0", "family": "csv_strict", "prompt": "name,amount,currency  \nAlice,1500,USD  \nBob,2000,EUR  \nCharlie,2500,GBP  ", "expect": {}}

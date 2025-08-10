@@ -1,0 +1,16 @@
+openai>=1.35.7
+google-generativeai>=0.6.0
+httpx>=0.27.0
+anyio>=4.4.0
+pydantic>=2.7.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
+jsonschema>=4.22.0
+tqdm>=4.66.4
+uvloop; sys_platform == 'linux'
+regex
+streamlit
+plotly
+pandas
+transformers
+torch

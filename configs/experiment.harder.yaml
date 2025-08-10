@@ -1,0 +1,21 @@
+critics:
+  format_explainer:
+    enabled: true
+    max_tokens: 120
+    model: gpt-4o-mini
+    provider: openai
+guards:
+  repairs: true
+  self_consistency_json: 1
+models:
+- key: openai_gpt4o_mini
+  model: gpt-4o-mini
+  params:
+    max_tokens: 512
+    temperature: 0.0
+  provider: openai
+run:
+  parallelism: 8
+  retries: 1
+  timeout_s: 20
+suite: data/suites/harder-001.jsonl

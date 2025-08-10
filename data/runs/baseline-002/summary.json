@@ -1,0 +1,16 @@
+{
+  "by_family": {
+    "csv_strict": {
+      "count": 30,
+      "pass": 7,
+      "pass_rate": 0.23333333333333334
+    }
+  },
+  "taxonomy": {
+    "invalid_structure": 23
+  },
+  "latency": {
+    "p50": 917.5,
+    "p95": 1563
+  }
+}

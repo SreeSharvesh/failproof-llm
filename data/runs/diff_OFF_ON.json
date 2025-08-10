@@ -1,0 +1,45 @@
+{
+  "by_family": {
+    "csv_strict": {
+      "off": 0.5,
+      "on": 0.7,
+      "delta": 0.19999999999999996
+    },
+    "html_snippet": {
+      "off": 1.0,
+      "on": 1.0,
+      "delta": 0.0
+    },
+    "json_schema": {
+      "off": 0.9,
+      "on": 0.9,
+      "delta": 0.0
+    }
+  },
+  "taxonomy_shift": {
+    "off_total_failures": 6,
+    "on_total_failures": 4,
+    "delta_failures": -2
+  },
+  "latency_shift": {
+    "off_p50": 955.0,
+    "on_p50": 982.0,
+    "off_p95": 1708,
+    "on_p95": 1907,
+    "delta_p50": 27.0,
+    "delta_p95": 199
+  },
+  "on_strategy_effectiveness": {
+    "flips_fail_to_pass": 17,
+    "fixed_by_strategy": {
+      "auto_repair_extract_json": 4,
+      "auto_repair_repair_csv": 6,
+      "auto_repair_repair_html": 7
+    },
+    "repairs_used_counts": {
+      "auto_repair_extract_json": 4,
+      "auto_repair_repair_csv": 6,
+      "auto_repair_repair_html": 7
+    }
+  }
+}

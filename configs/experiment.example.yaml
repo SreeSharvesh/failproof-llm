@@ -1,0 +1,30 @@
+suite: data/suites/full_suite.jsonl
+models:
+  - key: openai_gpt4o_mini
+    provider: openai
+    model: gpt-4o-mini
+    params:
+      temperature: 0.0
+      max_tokens: 512
+  # - key: gemini_15_pro
+  #   provider: gemini
+  #   model: gemini-1.5-pro
+  #   params:
+  #     temperature: 0.0
+  #     max_tokens: 512
+  #     force_json: true
+
+guards:
+  repairs: true                 # turn auto-repair strategies on/off
+  self_consistency_json: 1      # use 1 for live; 3 for offline precompute
+
+critics:
+  format_explainer:
+    enabled: true
+    provider: openai
+    model: gpt-4o-mini          # can be same provider; short outputs keep cost low
+    max_tokens: 120
+run:
+  parallelism: 8
+  timeout_s: 20
+  retries: 1
