@@ -796,16 +796,106 @@ if page == 'Home':
     st.markdown('     ')
 
     
-    st.markdown(
-        """
-        **Workflow**
-        1. **Dataset Studio** → Pick categories (JSON, CSV, HTML), generate a suite.
-        2. **Run & Analyze** → Select model + guards, run tests, view metrics & drill-down.
-        3. (Optional) Re-run with guards OFF vs ON to see measurable gains.
-        4. (Optional) Generate **harder follow-ups** from failures.
-        """
-    )
-    st.info('Tip: Start in **Dataset Studio** to create your suite, then head to **Run & Analyze**.')
+    import streamlit as st
+
+st.markdown("""
+
+---
+
+## **Problem Statement**
+Large Language Models (LLMs) are powerful but vulnerable to adversarial prompts, formatting stress tests, and domain-specific edge cases.  
+These vulnerabilities can cause LLMs to:
+- Produce incorrect or unsafe outputs
+- Fail to comply with structured output requirements
+- Break under edge-case inputs  
+
+There is currently no **practical, end-to-end benchmark** for developers to evaluate and compare models across *both* adversarial robustness and domain accuracy.
+
+---
+
+## **Our Solution**
+We built **FailProof-LLM** — a unified platform for:
+1. **Synthetic Dataset Generation**  
+   Prompt-driven creation of high-quality test cases across multiple robustness categories and domains.
+2. **Multi-Model Evaluation**  
+   Compare models side-by-side on structured, adversarial, and domain-specific tasks.
+3. **Automated Validation & Repair**  
+   Validate outputs using JSON schema, CSV header checks, HTML parsing, etc., and attempt automatic fixes.
+4. **Interactive Analytics**  
+   Real-time benchmarking dashboard with domain/category-wise breakdowns and model comparisons.
+
+---
+
+## **Instructions to Use the Platform**
+1. **Start at the Home Page** → Pick your workflow: *Dataset Studio* or *Run & Analyze*.
+2. **Generate Datasets** → In *Dataset Studio*, select a category/domain, choose dataset size, and generate cases.
+3. **Run Evaluation** → In *Run & Analyze*, choose your dataset and the models to test.
+4. **View Results** → Explore pass/fail breakdowns, repair success, latency, and model-wise comparisons.
+5. **Benchmark** → See aggregated metrics per category/domain to understand model strengths and weaknesses.
+
+---
+
+## **Models We Considered**
+- **GPT-4o-mini** (OpenAI) — High-accuracy, robust structured output
+- **Qwen1.5-0.5B** (Alibaba) — Strong mid-range performance
+- **TinyLlama-1.1B-Chat** — Lightweight, low-compute option
+- **FLAN-T5-base** & **FLAN-T5-small** (Google) — Open-source baselines
+
+---
+
+## **Domains & Adversarial Categories**
+We evaluate across **3 domains** and **22 adversarial robustness categories**.
+
+**Domains:**
+- Financial
+- Healthcare
+- Legal
+
+**Adversarial Categories:**
+1. **Prompt Manipulation Attacks**
+   - Prompt Injection  
+   - Code Injection  
+   - HTML Injection  
+2. **Structured Output Stress Tests**
+   - JSON Schema Stress  
+   - CSV Formatting Stress  
+3. **Cognitive & Reasoning Challenges**
+   - Context Length Stress  
+   - Multi-Step Reasoning Chains  
+   - Numerical Reasoning Edge Cases  
+   - Unit Conversion Traps  
+4. **Language & Input Perturbations**
+   - Unicode Confusables  
+   - Homoglyph Attacks  
+   - Mixed-Language Code Switch  
+   - Low-Resource Language Prompts  
+5. **Security & Safety Red-Teaming**
+   - Red-Teaming Scenarios  
+   - Chain-of-Thought Leakage  
+   - Few-Shot Poisoning  
+6. **Context & Misdirection**
+   - Ambiguous Queries  
+   - Context Switching  
+   - Fake Context Misdirection  
+   - Obfuscated Instructions  
+7. **Domain-Specific Edge Cases**
+   - Scenarios relevant to financial, legal, or healthcare rules
+
+---
+
+## **Evaluation Metrics**
+- **Accuracy** — % of cases passing validation  
+- **Validation Pass Rate** — Domain-specific validator success  
+- **Repair Success Rate** — % of failed cases fixed by auto-repair  
+- **Failure Rate** — % still failing after repair  
+- **Latency (ms)** — Avg. generation time  
+- **Token Efficiency** — Passes per token generated  
+
+These metrics are shown per **category/domain** with **model-wise comparisons** in the dashboard.
+
+---
+""")
+
 
     st.subheader("Benchmark — Rows: Domains & Categories • Columns: Metrics (one box per model)")
 
