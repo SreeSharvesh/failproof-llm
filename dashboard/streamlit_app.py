@@ -396,8 +396,8 @@ def build_adapters_from_ui(provider: str, model_name: str, params: Dict[str, Any
         _params.pop("force_json", None)
         adapter = HFAdapter(model_name, **_params)
 
-        # device = next(adapter.model.parameters()).device
-        # st.write(f"🤖 Model loaded on device: {device}")
+        device = next(adapter.model.parameters()).device
+        st.write(f"🤖 Model loaded on device: {device}")
     else:
         raise ValueError('Unsupported provider')
     return {key: adapter}
