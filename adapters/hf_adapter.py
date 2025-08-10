@@ -41,19 +41,20 @@ class HFAdapter:
             device_map=None,  # Force all weights to load on the specified device.
             trust_remote_code=True,
         )
-
+        model.to("cpu") 
 
         if self.is_seq2seq:
             self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name, **from_pretrained_kwargs)
         else:
             self.model = AutoModelForCausalLM.from_pretrained(model_name, **from_pretrained_kwargs)
-
+        
+        model.to('cpu') 
         # If we added a pad token, resize embeddings BEFORE moving to device
         if len(self.tok) > self.model.get_input_embeddings().num_embeddings:
             self.model.resize_token_embeddings(len(self.tok))
 
         # Move to CPU and verify no meta params remain
-        self.model.to(self.device)
+        self.model.to("cpu")
         self.model.eval()
         for n, p in self.model.named_parameters():
             if p.is_meta:
