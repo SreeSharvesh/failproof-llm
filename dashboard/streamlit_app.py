@@ -133,7 +133,102 @@ def kpi(label: str, value: str, help_text: str = ""):
     )
 
 # ---------- Helpers ----------
+# In-memory runs store: { run_dir: [records] }
+if "runs" not in st.session_state:
+    st.session_state["runs"] = {}
 
+def load_records_from_disk(run_dir: str) -> list[dict]:
+    p = pathlib.Path(run_dir) / "results.jsonl"
+    rows = []
+    if p.exists():
+        with p.open("r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    try:
+                        rows.append(json.loads(line))
+                    except:
+                        pass
+    return rows
+
+def remember_run(run_dir: str):
+    # Load once and keep in memory
+    if run_dir and run_dir not in st.session_state["runs"]:
+        st.session_state["runs"][run_dir] = load_records_from_disk(run_dir)
+
+def domain_of_family(fam: str) -> str:
+    f = (fam or "").lower()
+    if f.startswith("fin_"): return "Financial"
+    if f.startswith("hc_"):  return "Healthcare"
+    if f.startswith("lg_"):  return "Legal"
+    return "General"
+
+def is_pass(r):  return r.get("final_status") == "pass"
+def is_fail(r):  return r.get("final_status") == "fail"
+def is_repaired(r):
+    s = r.get("strategies_applied") or []
+    return any(x.startswith("auto_repair_") for x in s)
+
+def metrics_from_records(records: list[dict]) -> dict:
+    n = len(records) or 1
+    passes = sum(1 for r in records if is_pass(r))
+    fails  = n - passes
+    rep_total = sum(1 for r in records if is_repaired(r))
+    rep_good  = sum(1 for r in records if is_repaired(r) and is_pass(r))
+    lat = [r.get("latency_ms", 0) or 0 for r in records]
+    return {
+        "count": n,
+        "accuracy": 100.0 * passes / n,
+        "failure_rate": 100.0 * fails  / n,
+        "repair_success_rate": (100.0 * rep_good / rep_total) if rep_total else 0.0,
+        "avg_latency_ms": statistics.mean(lat) if lat else 0.0,
+        "p95_latency_ms": int(pd.Series(lat).quantile(0.95)) if lat else 0,
+    }
+
+def aggregate_from_memory(run_dirs: list[str]):
+    """
+    Build metrics only from the run dirs provided, using in-memory records.
+    Returns:
+      - overall_by_model: {model: metrics}
+      - by_model_domain: {(model, domain): metrics}
+      - by_model_family: {(model, family): metrics}
+    """
+    per_model = defaultdict(list)
+    per_model_domain = defaultdict(list)
+    per_model_family = defaultdict(list)
+
+    for rd in run_dirs:
+        recs = st.session_state["runs"].get(rd, [])
+        for r in recs:
+            model = r.get("model") or "unknown_model"
+            fam   = r.get("family") or "unknown_family"
+            dom   = domain_of_family(fam)
+            per_model[model].append(r)
+            per_model_domain[(model, dom)].append(r)
+            per_model_family[(model, fam)].append(r)
+
+    overall = {m: metrics_from_records(rs) for m, rs in per_model.items()}
+    by_domain = {(m,d): metrics_from_records(rs) for (m,d), rs in per_model_domain.items()}
+    by_family = {(m,f): metrics_from_records(rs) for (m,f), rs in per_model_family.items()}
+    return overall, by_domain, by_family
+
+def df_overall(overall: dict) -> pd.DataFrame:
+    df = pd.DataFrame(overall).T.reset_index().rename(columns={"index":"model"})
+    if df.empty: return df
+    cols = ["model","count","accuracy","failure_rate","repair_success_rate","avg_latency_ms","p95_latency_ms"]
+    return df[cols].sort_values("accuracy", ascending=False)
+
+def df_by_domain(by_domain: dict) -> pd.DataFrame:
+    rows = []
+    for (m,d), mtr in by_domain.items():
+        rows.append(dict(model=m, domain=d, **mtr))
+    return pd.DataFrame(rows)
+
+def df_by_family(by_family: dict) -> pd.DataFrame:
+    rows = []
+    for (m,f), mtr in by_family.items():
+        rows.append(dict(model=m, family=f, **mtr))
+    return pd.DataFrame(rows)
+    
 def ensure_dirs():
     os.makedirs(RUNS_DIR, exist_ok=True)
     os.makedirs(SUITES_DIR, exist_ok=True)
@@ -592,6 +687,7 @@ else:
         with st.spinner('Running OFF (repairs disabled)...'):
             run_experiment_sync(cases, adapters, run_dir, cfg)
         st.success(f"OFF run complete → {run_dir}")
+        remember_run(off_dir)
 
     if do_on:
         ts = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -606,6 +702,7 @@ else:
         with st.spinner('Running ON (repairs enabled)...'):
             run_experiment_sync(cases, adapters, run_dir, cfg)
         st.success(f"ON run complete → {run_dir}")
+        remember_run(on_dir)
 
     st.write('---')
 
@@ -635,3 +732,58 @@ else:
     with tab3:
         sel_run_for_drill = st.selectbox('Run dir for drill-down', options=run_dirs, index=len(run_dirs)-1, key='dr')
         render_drilldown(sel_run_for_drill)
+
+    with tab4:
+        st.subheader("Analysis (current selection)")
+    
+        # Use *selected* run dirs from your two dropdowns in Ablation (or add selectors here)
+        selected_dirs = []
+        try:
+            selected_dirs.extend([off_sel, on_sel])  # if you have off_sel/on_sel in scope
+        except NameError:
+            pass
+    
+        # Fallback: any runs already cached
+        if not selected_dirs:
+            selected_dirs = list(st.session_state["runs"].keys())
+    
+        selected_dirs = [d for d in selected_dirs if d in st.session_state["runs"]]
+        if not selected_dirs:
+            st.info("No runs loaded in memory yet. Run a suite or load a run to analyze.")
+            st.stop()
+    
+        overall, by_domain, by_family = aggregate_from_memory(selected_dirs)
+    
+        st.markdown("**Overall (per model)**")
+        dfO = df_overall(overall)
+        if not dfO.empty:
+            st.dataframe(dfO.style.format({
+                "accuracy":"{:.2f}", "failure_rate":"{:.2f}",
+                "repair_success_rate":"{:.2f}",
+                "avg_latency_ms":"{:.0f}", "p95_latency_ms":"{:.0f}"}), use_container_width=True)
+    
+        st.markdown("**By Domain**")
+        dfD = df_by_domain(by_domain)
+        if not dfD.empty:
+            st.dataframe(dfD.style.format({
+                "accuracy":"{:.2f}", "failure_rate":"{:.2f}",
+                "repair_success_rate":"{:.2f}",
+                "avg_latency_ms":"{:.0f}", "p95_latency_ms":"{:.0f}"}), use_container_width=True)
+            st.plotly_chart(px.bar(dfD, x="domain", y="accuracy", color="model",
+                                   barmode="group", title="Accuracy by Domain"),
+                            use_container_width=True)
+    
+        st.markdown("**By Category / Family**")
+        dfF = df_by_family(by_family)
+        if not dfF.empty:
+            st.dataframe(dfF.style.format({
+                "accuracy":"{:.2f}", "failure_rate":"{:.2f}",
+                "repair_success_rate":"{:.2f}",
+                "avg_latency_ms":"{:.0f}", "p95_latency_ms":"{:.0f}"}), use_container_width=True)
+            # Optional: show top families by volume for clarity
+            top_fams = dfF.groupby("family")["count"].sum().sort_values(ascending=False).head(12).index.tolist()
+            dfTop = dfF[dfF["family"].isin(top_fams)]
+            st.plotly_chart(px.bar(dfTop, x="family", y="accuracy", color="model",
+                                   barmode="group", title="Top Families by Accuracy"),
+                            use_container_width=True)
+    
