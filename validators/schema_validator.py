@@ -1,15 +1,19 @@
-from __future__ import annotations
-from jsonschema import validate, ValidationError
 import json
-from typing import Tuple, Dict, Any
+from jsonschema import validate, exceptions as js_ex
 
-def validate_json(output_text: str, schema: Dict[str, Any]) -> Tuple[bool, str]:
+def validate_json(output_text: str, schema: dict) -> tuple[bool, str]:
     try:
         obj = json.loads(output_text)
-    except Exception as e:
-        return False, f"json_parse_error: {e}"
+    except Exception:
+        return False, "parse_error: not json"
+
     try:
         validate(instance=obj, schema=schema)
         return True, "ok"
-    except ValidationError as e:
-        return False, f"json_schema_error: {e.message}"
+    except js_ex.SchemaError:
+        # bad test config/schema — do not crash the run
+        return False, "schema_invalid"
+    except js_ex.ValidationError as e:
+        # normal schema mismatch
+        reason = getattr(e, "message", "schema_error")
+        return False, f"schema_error: {reason}"
