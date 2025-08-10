@@ -8,7 +8,10 @@ from validators.csv_validator import validate_csv
 from validators.html_validator import validate_html
 from strategies.auto_repair import extract_json
 from strategies.auto_repair_structured import repair_csv, repair_html
-from validators.format_explainer import get_format_explanation  # new (AI explainer)
+from validators.format_explainer import get_format_explanation
+from validators.domain.financial_validator import validate_fin_invoice_json
+from validators.domain.healthcare_validator import validate_hc_claim_csv
+from validators.domain.legal_validator import validate_legal_html_snippet
 
 
 # ---------- helpers ----------
@@ -37,24 +40,40 @@ def _classify_error(error: str | None) -> Tuple[str | None, str]:
     return "crash", "fail"
 
 def validate_by_case(output: str, case: dict) -> tuple[bool, str, dict]:
-    validators: Dict[str, bool] = {}
+    validators = {}
     expect = case.get("expect", {})
     t = expect.get("type")
+
     if not output or not output.strip():
         return False, "empty_output", validators
+
+    # core format validators (you already have these)
     if t == "json":
         ok, reason = validate_json(output, expect.get("schema", {}))
         validators["json_schema"] = ok
-        return ok, reason, validators
-    if t == "csv":
+    elif t == "csv":
         ok, reason = validate_csv(output, expect)
         validators["csv"] = ok
-        return ok, reason, validators
-    if t == "html":
+    elif t == "html":
         ok, reason = validate_html(output, expect)
         validators["html"] = ok
-        return ok, reason, validators
-    return True, "no_validation", validators
+    else:
+        ok, reason = True, "no_validation"
+
+    # domain-specific augment (only if core ok)
+    if ok:
+        fam = (case.get("family") or "")
+        if fam.startswith("fin_") and t == "json":
+            ok, reason = validate_fin_invoice_json(output)
+            validators["domain_finance"] = ok
+        elif fam.startswith("hc_") and t == "csv":
+            ok, reason = validate_hc_claim_csv(output)
+            validators["domain_healthcare"] = ok
+        elif fam.startswith("lg_") and t == "html":
+            ok, reason = validate_legal_html_snippet(output)
+            validators["domain_legal"] = ok
+
+    return ok, reason, validators
 
 def _reason_to_taxonomy(reason: str) -> str:
     r = (reason or "").lower()
