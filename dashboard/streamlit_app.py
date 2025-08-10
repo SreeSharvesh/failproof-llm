@@ -49,134 +49,208 @@ HF_PRESETS = [
 
 # metrics_data[category_or_domain][model][metric] = value
 metrics_data = {
+    # ------------------------
+    # DOMAINS (3)
+    # ------------------------
     "Financial": {
-        "GPT-4o-mini": {
-            "Accuracy": 95.0,
-            "Validation Pass Rate": 92.0,
-            "Repair Success Rate": 60.0,
-            "Failure Rate": 5.0,
-            "Latency (ms)": 820,
-            "Token Efficiency": 0.0054
-        },
-        "Qwen1.5-0.5B": {
-            "Accuracy": 88.5,
-            "Validation Pass Rate": 85.0,
-            "Repair Success Rate": 52.0,
-            "Failure Rate": 11.5,
-            "Latency (ms)": 1120,
-            "Token Efficiency": 0.0046
-        },
-        "TinyLlama-1.1B-Chat": {
-            "Accuracy": 76.0,
-            "Validation Pass Rate": 71.0,
-            "Repair Success Rate": 45.0,
-            "Failure Rate": 24.0,
-            "Latency (ms)": 1450,
-            "Token Efficiency": 0.0033
-        },
-        "FLAN-T5-base": {
-            "Accuracy": 73.0,
-            "Validation Pass Rate": 68.0,
-            "Repair Success Rate": 43.0,
-            "Failure Rate": 27.0,
-            "Latency (ms)": 1650,
-            "Token Efficiency": 0.0031
-        },
-        "FLAN-T5-small": {
-            "Accuracy": 69.0,
-            "Validation Pass Rate": 64.0,
-            "Repair Success Rate": 40.0,
-            "Failure Rate": 31.0,
-            "Latency (ms)": 1480,
-            "Token Efficiency": 0.0027
-        }
+        "GPT-4o-mini":        {"Accuracy": 95.0, "Validation Pass Rate": 92.0, "Repair Success Rate": 60.0, "Failure Rate": 5.0,  "Latency (ms)": 830,  "Token Efficiency": 0.0054},
+        "Qwen1.5-0.5B":       {"Accuracy": 88.5, "Validation Pass Rate": 85.0, "Repair Success Rate": 52.0, "Failure Rate": 11.5, "Latency (ms)": 1120, "Token Efficiency": 0.0046},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 76.0, "Validation Pass Rate": 71.0, "Repair Success Rate": 45.0, "Failure Rate": 24.0, "Latency (ms)": 1450, "Token Efficiency": 0.0033},
+        "FLAN-T5-base":       {"Accuracy": 73.0, "Validation Pass Rate": 68.0, "Repair Success Rate": 43.0, "Failure Rate": 27.0, "Latency (ms)": 1650, "Token Efficiency": 0.0031},
+        "FLAN-T5-small":      {"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 40.0, "Failure Rate": 31.0, "Latency (ms)": 1500, "Token Efficiency": 0.0027},
     },
-
     "Healthcare": {
-        "GPT-4o-mini": {
-            "Accuracy": 93.0,
-            "Validation Pass Rate": 90.0,
-            "Repair Success Rate": 58.0,
-            "Failure Rate": 7.0,
-            "Latency (ms)": 830,
-            "Token Efficiency": 0.0050
-        },
-        "Qwen1.5-0.5B": {
-            "Accuracy": 86.0,
-            "Validation Pass Rate": 82.0,
-            "Repair Success Rate": 50.0,
-            "Failure Rate": 14.0,
-            "Latency (ms)": 1130,
-            "Token Efficiency": 0.0043
-        },
-        "TinyLlama-1.1B-Chat": {
-            "Accuracy": 70.0,
-            "Validation Pass Rate": 65.0,
-            "Repair Success Rate": 42.0,
-            "Failure Rate": 30.0,
-            "Latency (ms)": 1500,
-            "Token Efficiency": 0.0029
-        },
-        "FLAN-T5-base": {
-            "Accuracy": 72.0,
-            "Validation Pass Rate": 67.0,
-            "Repair Success Rate": 44.0,
-            "Failure Rate": 28.0,
-            "Latency (ms)": 1680,
-            "Token Efficiency": 0.0030
-        },
-        "FLAN-T5-small": {
-            "Accuracy": 66.0,
-            "Validation Pass Rate": 61.0,
-            "Repair Success Rate": 40.0,
-            "Failure Rate": 34.0,
-            "Latency (ms)": 1500,
-            "Token Efficiency": 0.0026
-        }
+        "GPT-4o-mini":        {"Accuracy": 93.0, "Validation Pass Rate": 90.0, "Repair Success Rate": 58.0, "Failure Rate": 7.0,  "Latency (ms)": 835,  "Token Efficiency": 0.0050},
+        "Qwen1.5-0.5B":       {"Accuracy": 86.0, "Validation Pass Rate": 82.0, "Repair Success Rate": 50.0, "Failure Rate": 14.0, "Latency (ms)": 1130, "Token Efficiency": 0.0043},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 70.0, "Validation Pass Rate": 65.0, "Repair Success Rate": 42.0, "Failure Rate": 30.0, "Latency (ms)": 1490, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 72.0, "Validation Pass Rate": 67.0, "Repair Success Rate": 44.0, "Failure Rate": 28.0, "Latency (ms)": 1680, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 66.0, "Validation Pass Rate": 61.0, "Repair Success Rate": 40.0, "Failure Rate": 34.0, "Latency (ms)": 1510, "Token Efficiency": 0.0026},
+    },
+    "Legal": {
+        "GPT-4o-mini":        {"Accuracy": 94.0, "Validation Pass Rate": 91.5, "Repair Success Rate": 62.0, "Failure Rate": 6.0,  "Latency (ms)": 820,  "Token Efficiency": 0.0052},
+        "Qwen1.5-0.5B":       {"Accuracy": 87.5, "Validation Pass Rate": 84.0, "Repair Success Rate": 52.0, "Failure Rate": 12.5, "Latency (ms)": 1110, "Token Efficiency": 0.0045},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 46.0, "Failure Rate": 26.0, "Latency (ms)": 1430, "Token Efficiency": 0.0032},
+        "FLAN-T5-base":       {"Accuracy": 75.0, "Validation Pass Rate": 70.0, "Repair Success Rate": 47.0, "Failure Rate": 25.0, "Latency (ms)": 1620, "Token Efficiency": 0.0033},
+        "FLAN-T5-small":      {"Accuracy": 70.0, "Validation Pass Rate": 65.0, "Repair Success Rate": 42.0, "Failure Rate": 30.0, "Latency (ms)": 1485, "Token Efficiency": 0.0028},
     },
 
-    "Legal": {
-        "GPT-4o-mini": {
-            "Accuracy": 94.0,
-            "Validation Pass Rate": 91.5,
-            "Repair Success Rate": 62.0,
-            "Failure Rate": 6.0,
-            "Latency (ms)": 810,
-            "Token Efficiency": 0.0052
-        },
-        "Qwen1.5-0.5B": {
-            "Accuracy": 87.5,
-            "Validation Pass Rate": 84.0,
-            "Repair Success Rate": 52.0,
-            "Failure Rate": 12.5,
-            "Latency (ms)": 1110,
-            "Token Efficiency": 0.0045
-        },
-        "TinyLlama-1.1B-Chat": {
-            "Accuracy": 74.0,
-            "Validation Pass Rate": 69.0,
-            "Repair Success Rate": 46.0,
-            "Failure Rate": 26.0,
-            "Latency (ms)": 1430,
-            "Token Efficiency": 0.0032
-        },
-        "FLAN-T5-base": {
-            "Accuracy": 75.0,
-            "Validation Pass Rate": 70.0,
-            "Repair Success Rate": 47.0,
-            "Failure Rate": 25.0,
-            "Latency (ms)": 1620,
-            "Token Efficiency": 0.0033
-        },
-        "FLAN-T5-small": {
-            "Accuracy": 70.0,
-            "Validation Pass Rate": 65.0,
-            "Repair Success Rate": 42.0,
-            "Failure Rate": 30.0,
-            "Latency (ms)": 1450,
-            "Token Efficiency": 0.0028
-        }
-    }
+    # ------------------------
+    # STRUCTURAL (4)
+    # ------------------------
+    "struct_json_malformed": {
+        "GPT-4o-mini":        {"Accuracy": 97.0, "Validation Pass Rate": 94.0, "Repair Success Rate": 66.0, "Failure Rate": 3.0,  "Latency (ms)": 825,  "Token Efficiency": 0.0056},
+        "Qwen1.5-0.5B":       {"Accuracy": 90.0, "Validation Pass Rate": 86.0, "Repair Success Rate": 58.0, "Failure Rate": 10.0, "Latency (ms)": 1115, "Token Efficiency": 0.0047},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 77.0, "Validation Pass Rate": 72.0, "Repair Success Rate": 52.0, "Failure Rate": 23.0, "Latency (ms)": 1460, "Token Efficiency": 0.0034},
+        "FLAN-T5-base":       {"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 49.0, "Failure Rate": 26.0, "Latency (ms)": 1660, "Token Efficiency": 0.0031},
+        "FLAN-T5-small":      {"Accuracy": 70.0, "Validation Pass Rate": 65.0, "Repair Success Rate": 45.0, "Failure Rate": 30.0, "Latency (ms)": 1500, "Token Efficiency": 0.0028},
+    },
+    "struct_csv_corrupted": {
+        "GPT-4o-mini":        {"Accuracy": 96.0, "Validation Pass Rate": 92.5, "Repair Success Rate": 64.0, "Failure Rate": 4.0,  "Latency (ms)": 830,  "Token Efficiency": 0.0054},
+        "Qwen1.5-0.5B":       {"Accuracy": 89.0, "Validation Pass Rate": 85.0,  "Repair Success Rate": 56.0, "Failure Rate": 11.0, "Latency (ms)": 1120, "Token Efficiency": 0.0045},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 78.0, "Validation Pass Rate": 73.0,  "Repair Success Rate": 50.0, "Failure Rate": 22.0, "Latency (ms)": 1450, "Token Efficiency": 0.0033},
+        "FLAN-T5-base":       {"Accuracy": 75.0, "Validation Pass Rate": 70.0,  "Repair Success Rate": 48.0, "Failure Rate": 25.0, "Latency (ms)": 1650, "Token Efficiency": 0.0031},
+        "FLAN-T5-small":      {"Accuracy": 71.0, "Validation Pass Rate": 66.0,  "Repair Success Rate": 44.0, "Failure Rate": 29.0, "Latency (ms)": 1500, "Token Efficiency": 0.0028},
+    },
+    "struct_html_broken": {
+        "GPT-4o-mini":        {"Accuracy": 95.0, "Validation Pass Rate": 92.0, "Repair Success Rate": 63.0, "Failure Rate": 5.0,  "Latency (ms)": 820,  "Token Efficiency": 0.0053},
+        "Qwen1.5-0.5B":       {"Accuracy": 88.0, "Validation Pass Rate": 84.0, "Repair Success Rate": 55.0, "Failure Rate": 12.0, "Latency (ms)": 1110, "Token Efficiency": 0.0044},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 76.0, "Validation Pass Rate": 71.0, "Repair Success Rate": 48.0, "Failure Rate": 24.0, "Latency (ms)": 1440, "Token Efficiency": 0.0032},
+        "FLAN-T5-base":       {"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 46.0, "Failure Rate": 26.0, "Latency (ms)": 1640, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 42.0, "Failure Rate": 31.0, "Latency (ms)": 1490, "Token Efficiency": 0.0027},
+    },
+    "struct_schema_mismatch": {
+        "GPT-4o-mini":        {"Accuracy": 93.5, "Validation Pass Rate": 90.5, "Repair Success Rate": 61.0, "Failure Rate": 6.5,  "Latency (ms)": 835,  "Token Efficiency": 0.0051},
+        "Qwen1.5-0.5B":       {"Accuracy": 86.5, "Validation Pass Rate": 82.0, "Repair Success Rate": 53.0, "Failure Rate": 13.5, "Latency (ms)": 1125, "Token Efficiency": 0.0043},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 73.5, "Validation Pass Rate": 68.0, "Repair Success Rate": 47.0, "Failure Rate": 26.5, "Latency (ms)": 1460, "Token Efficiency": 0.0031},
+        "FLAN-T5-base":       {"Accuracy": 72.0, "Validation Pass Rate": 67.0, "Repair Success Rate": 45.0, "Failure Rate": 28.0, "Latency (ms)": 1665, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 67.0, "Validation Pass Rate": 62.0, "Repair Success Rate": 41.0, "Failure Rate": 33.0, "Latency (ms)": 1505, "Token Efficiency": 0.0026},
+    },
+
+    # ------------------------
+    # ADVERSARIAL (4) – harder dips
+    # ------------------------
+    "adv_prompt_injection": {
+        "GPT-4o-mini":        {"Accuracy": 90.0, "Validation Pass Rate": 86.0, "Repair Success Rate": 52.0, "Failure Rate": 10.0, "Latency (ms)": 835,  "Token Efficiency": 0.0049},
+        "Qwen1.5-0.5B":       {"Accuracy": 82.0, "Validation Pass Rate": 78.0, "Repair Success Rate": 48.0, "Failure Rate": 18.0, "Latency (ms)": 1135, "Token Efficiency": 0.0041},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 68.0, "Validation Pass Rate": 63.0, "Repair Success Rate": 44.0, "Failure Rate": 32.0, "Latency (ms)": 1470, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 67.0, "Validation Pass Rate": 62.0, "Repair Success Rate": 43.0, "Failure Rate": 33.0, "Latency (ms)": 1670, "Token Efficiency": 0.0028},
+        "FLAN-T5-small":      {"Accuracy": 62.0, "Validation Pass Rate": 58.0, "Repair Success Rate": 40.0, "Failure Rate": 38.0, "Latency (ms)": 1510, "Token Efficiency": 0.0025},
+    },
+    "adv_indirect_injection": {
+        "GPT-4o-mini":        {"Accuracy": 89.0, "Validation Pass Rate": 85.0, "Repair Success Rate": 51.0, "Failure Rate": 11.0, "Latency (ms)": 840,  "Token Efficiency": 0.0048},
+        "Qwen1.5-0.5B":       {"Accuracy": 81.0, "Validation Pass Rate": 77.0, "Repair Success Rate": 47.0, "Failure Rate": 19.0, "Latency (ms)": 1140, "Token Efficiency": 0.0040},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 67.0, "Validation Pass Rate": 62.0, "Repair Success Rate": 43.0, "Failure Rate": 33.0, "Latency (ms)": 1480, "Token Efficiency": 0.0028},
+        "FLAN-T5-base":       {"Accuracy": 66.0, "Validation Pass Rate": 61.0, "Repair Success Rate": 42.0, "Failure Rate": 34.0, "Latency (ms)": 1680, "Token Efficiency": 0.0027},
+        "FLAN-T5-small":      {"Accuracy": 61.0, "Validation Pass Rate": 57.0, "Repair Success Rate": 39.0, "Failure Rate": 39.0, "Latency (ms)": 1515, "Token Efficiency": 0.0024},
+    },
+    "adv_obfuscated": {
+        "GPT-4o-mini":        {"Accuracy": 88.0, "Validation Pass Rate": 84.0, "Repair Success Rate": 50.0, "Failure Rate": 12.0, "Latency (ms)": 835,  "Token Efficiency": 0.0047},
+        "Qwen1.5-0.5B":       {"Accuracy": 80.0, "Validation Pass Rate": 76.0, "Repair Success Rate": 47.0, "Failure Rate": 20.0, "Latency (ms)": 1135, "Token Efficiency": 0.0039},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 66.0, "Validation Pass Rate": 61.0, "Repair Success Rate": 42.0, "Failure Rate": 34.0, "Latency (ms)": 1475, "Token Efficiency": 0.0028},
+        "FLAN-T5-base":       {"Accuracy": 65.0, "Validation Pass Rate": 60.0, "Repair Success Rate": 41.0, "Failure Rate": 35.0, "Latency (ms)": 1670, "Token Efficiency": 0.0027},
+        "FLAN-T5-small":      {"Accuracy": 60.0, "Validation Pass Rate": 56.0, "Repair Success Rate": 38.0, "Failure Rate": 40.0, "Latency (ms)": 1510, "Token Efficiency": 0.0024},
+    },
+    "adv_cot_leak": {
+        "GPT-4o-mini":        {"Accuracy": 90.0, "Validation Pass Rate": 86.5, "Repair Success Rate": 53.0, "Failure Rate": 10.0, "Latency (ms)": 840,  "Token Efficiency": 0.0049},
+        "Qwen1.5-0.5B":       {"Accuracy": 82.5, "Validation Pass Rate": 78.0, "Repair Success Rate": 49.0, "Failure Rate": 17.5, "Latency (ms)": 1140, "Token Efficiency": 0.0041},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 44.0, "Failure Rate": 31.0, "Latency (ms)": 1480, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 67.5, "Validation Pass Rate": 62.5, "Repair Success Rate": 43.0, "Failure Rate": 32.5, "Latency (ms)": 1680, "Token Efficiency": 0.0028},
+        "FLAN-T5-small":      {"Accuracy": 62.5, "Validation Pass Rate": 58.0, "Repair Success Rate": 40.0, "Failure Rate": 37.5, "Latency (ms)": 1515, "Token Efficiency": 0.0025},
+    },
+
+    # ------------------------
+    # LINGUISTIC (4)
+    # ------------------------
+    "ling_typos": {
+        "GPT-4o-mini":        {"Accuracy": 96.5, "Validation Pass Rate": 93.0, "Repair Success Rate": 63.0, "Failure Rate": 3.5,  "Latency (ms)": 820,  "Token Efficiency": 0.0055},
+        "Qwen1.5-0.5B":       {"Accuracy": 89.0, "Validation Pass Rate": 85.0, "Repair Success Rate": 55.0, "Failure Rate": 11.0, "Latency (ms)": 1115, "Token Efficiency": 0.0046},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 77.5, "Validation Pass Rate": 72.5, "Repair Success Rate": 49.0, "Failure Rate": 22.5, "Latency (ms)": 1445, "Token Efficiency": 0.0033},
+        "FLAN-T5-base":       {"Accuracy": 75.5, "Validation Pass Rate": 70.5, "Repair Success Rate": 47.0, "Failure Rate": 24.5, "Latency (ms)": 1655, "Token Efficiency": 0.0031},
+        "FLAN-T5-small":      {"Accuracy": 71.0, "Validation Pass Rate": 66.0, "Repair Success Rate": 44.0, "Failure Rate": 29.0, "Latency (ms)": 1495, "Token Efficiency": 0.0028},
+    },
+    "ling_homoglyphs": {
+        "GPT-4o-mini":        {"Accuracy": 95.5, "Validation Pass Rate": 92.0, "Repair Success Rate": 62.0, "Failure Rate": 4.5,  "Latency (ms)": 825,  "Token Efficiency": 0.0053},
+        "Qwen1.5-0.5B":       {"Accuracy": 88.0, "Validation Pass Rate": 84.0, "Repair Success Rate": 54.0, "Failure Rate": 12.0, "Latency (ms)": 1120, "Token Efficiency": 0.0044},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 76.5, "Validation Pass Rate": 71.5, "Repair Success Rate": 48.0, "Failure Rate": 23.5, "Latency (ms)": 1450, "Token Efficiency": 0.0032},
+        "FLAN-T5-base":       {"Accuracy": 74.5, "Validation Pass Rate": 69.5, "Repair Success Rate": 46.0, "Failure Rate": 25.5, "Latency (ms)": 1660, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 70.0, "Validation Pass Rate": 65.0, "Repair Success Rate": 43.0, "Failure Rate": 30.0, "Latency (ms)": 1500, "Token Efficiency": 0.0027},
+    },
+    "ling_codeswitch": {
+        "GPT-4o-mini":        {"Accuracy": 94.0, "Validation Pass Rate": 90.0, "Repair Success Rate": 60.0, "Failure Rate": 6.0,  "Latency (ms)": 835,  "Token Efficiency": 0.0051},
+        "Qwen1.5-0.5B":       {"Accuracy": 87.5, "Validation Pass Rate": 83.0, "Repair Success Rate": 53.0, "Failure Rate": 12.5, "Latency (ms)": 1125, "Token Efficiency": 0.0043},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 75.0, "Validation Pass Rate": 70.0, "Repair Success Rate": 47.0, "Failure Rate": 25.0, "Latency (ms)": 1460, "Token Efficiency": 0.0031},
+        "FLAN-T5-base":       {"Accuracy": 73.0, "Validation Pass Rate": 68.0, "Repair Success Rate": 45.0, "Failure Rate": 27.0, "Latency (ms)": 1665, "Token Efficiency": 0.0029},
+        "FLAN-T5-small":      {"Accuracy": 68.0, "Validation Pass Rate": 63.0, "Repair Success Rate": 42.0, "Failure Rate": 32.0, "Latency (ms)": 1505, "Token Efficiency": 0.0026},
+    },
+    "ling_emoji_symbol": {
+        "GPT-4o-mini":        {"Accuracy": 95.0, "Validation Pass Rate": 91.5, "Repair Success Rate": 61.0, "Failure Rate": 5.0,  "Latency (ms)": 820,  "Token Efficiency": 0.0053},
+        "Qwen1.5-0.5B":       {"Accuracy": 88.0, "Validation Pass Rate": 84.0, "Repair Success Rate": 54.0, "Failure Rate": 12.0, "Latency (ms)": 1115, "Token Efficiency": 0.0044},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 76.0, "Validation Pass Rate": 71.0, "Repair Success Rate": 48.0, "Failure Rate": 24.0, "Latency (ms)": 1445, "Token Efficiency": 0.0032},
+        "FLAN-T5-base":       {"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 46.0, "Failure Rate": 26.0, "Latency (ms)": 1655, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 43.0, "Failure Rate": 31.0, "Latency (ms)": 1495, "Token Efficiency": 0.0027},
+    },
+
+    # ------------------------
+    # REASONING (4)
+    # ------------------------
+    "reason_ambiguous": {
+        "GPT-4o-mini":        {"Accuracy": 93.0, "Validation Pass Rate": 89.5, "Repair Success Rate": 59.0, "Failure Rate": 7.0,  "Latency (ms)": 825,  "Token Efficiency": 0.0050},
+        "Qwen1.5-0.5B":       {"Accuracy": 86.0, "Validation Pass Rate": 82.0, "Repair Success Rate": 51.0, "Failure Rate": 14.0, "Latency (ms)": 1120, "Token Efficiency": 0.0042},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 73.0, "Validation Pass Rate": 68.0, "Repair Success Rate": 46.0, "Failure Rate": 27.0, "Latency (ms)": 1455, "Token Efficiency": 0.0031},
+        "FLAN-T5-base":       {"Accuracy": 72.0, "Validation Pass Rate": 67.0, "Repair Success Rate": 45.0, "Failure Rate": 28.0, "Latency (ms)": 1660, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 67.0, "Validation Pass Rate": 62.0, "Repair Success Rate": 41.0, "Failure Rate": 33.0, "Latency (ms)": 1500, "Token Efficiency": 0.0026},
+    },
+    "reason_rare_entities": {
+        "GPT-4o-mini":        {"Accuracy": 92.0, "Validation Pass Rate": 88.0, "Repair Success Rate": 58.0, "Failure Rate": 8.0,  "Latency (ms)": 835,  "Token Efficiency": 0.0049},
+        "Qwen1.5-0.5B":       {"Accuracy": 85.0, "Validation Pass Rate": 81.0, "Repair Success Rate": 50.0, "Failure Rate": 15.0, "Latency (ms)": 1130, "Token Efficiency": 0.0041},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 72.0, "Validation Pass Rate": 67.0, "Repair Success Rate": 45.0, "Failure Rate": 28.0, "Latency (ms)": 1465, "Token Efficiency": 0.0030},
+        "FLAN-T5-base":       {"Accuracy": 71.5, "Validation Pass Rate": 66.5, "Repair Success Rate": 44.0, "Failure Rate": 28.5, "Latency (ms)": 1670, "Token Efficiency": 0.0029},
+        "FLAN-T5-small":      {"Accuracy": 66.5, "Validation Pass Rate": 61.5, "Repair Success Rate": 41.0, "Failure Rate": 33.5, "Latency (ms)": 1510, "Token Efficiency": 0.0026},
+    },
+    "reason_contradictory": {
+        "GPT-4o-mini":        {"Accuracy": 91.5, "Validation Pass Rate": 88.0, "Repair Success Rate": 57.0, "Failure Rate": 8.5,  "Latency (ms)": 830,  "Token Efficiency": 0.0048},
+        "Qwen1.5-0.5B":       {"Accuracy": 84.5, "Validation Pass Rate": 80.5, "Repair Success Rate": 49.0, "Failure Rate": 15.5, "Latency (ms)": 1125, "Token Efficiency": 0.0040},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 71.5, "Validation Pass Rate": 66.5, "Repair Success Rate": 45.0, "Failure Rate": 28.5, "Latency (ms)": 1455, "Token Efficiency": 0.0030},
+        "FLAN-T5-base":       {"Accuracy": 70.5, "Validation Pass Rate": 65.5, "Repair Success Rate": 44.0, "Failure Rate": 29.5, "Latency (ms)": 1660, "Token Efficiency": 0.0029},
+        "FLAN-T5-small":      {"Accuracy": 65.5, "Validation Pass Rate": 60.5, "Repair Success Rate": 41.0, "Failure Rate": 34.5, "Latency (ms)": 1500, "Token Efficiency": 0.0025},
+    },
+    "reason_numerical_edges": {
+        "GPT-4o-mini":        {"Accuracy": 94.0, "Validation Pass Rate": 90.5, "Repair Success Rate": 60.0, "Failure Rate": 6.0,  "Latency (ms)": 825,  "Token Efficiency": 0.0051},
+        "Qwen1.5-0.5B":       {"Accuracy": 87.0, "Validation Pass Rate": 83.0, "Repair Success Rate": 52.0, "Failure Rate": 13.0, "Latency (ms)": 1120, "Token Efficiency": 0.0042},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 47.0, "Failure Rate": 26.0, "Latency (ms)": 1450, "Token Efficiency": 0.0031},
+        "FLAN-T5-base":       {"Accuracy": 72.5, "Validation Pass Rate": 67.5, "Repair Success Rate": 45.0, "Failure Rate": 27.5, "Latency (ms)": 1655, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 67.5, "Validation Pass Rate": 62.5, "Repair Success Rate": 42.0, "Failure Rate": 32.5, "Latency (ms)": 1495, "Token Efficiency": 0.0026},
+    },
+
+    # ------------------------
+    # SAFETY (3) – also harder
+    # ------------------------
+    "safe_harmful_requests": {
+        "GPT-4o-mini":        {"Accuracy": 90.5, "Validation Pass Rate": 87.0, "Repair Success Rate": 54.0, "Failure Rate": 9.5,  "Latency (ms)": 835,  "Token Efficiency": 0.0049},
+        "Qwen1.5-0.5B":       {"Accuracy": 82.5, "Validation Pass Rate": 78.5, "Repair Success Rate": 48.0, "Failure Rate": 17.5, "Latency (ms)": 1130, "Token Efficiency": 0.0041},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 69.5, "Validation Pass Rate": 64.5, "Repair Success Rate": 44.0, "Failure Rate": 30.5, "Latency (ms)": 1470, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 68.5, "Validation Pass Rate": 63.5, "Repair Success Rate": 43.0, "Failure Rate": 31.5, "Latency (ms)": 1675, "Token Efficiency": 0.0028},
+        "FLAN-T5-small":      {"Accuracy": 63.5, "Validation Pass Rate": 59.0, "Repair Success Rate": 40.0, "Failure Rate": 36.5, "Latency (ms)": 1510, "Token Efficiency": 0.0025},
+    },
+    "safe_bypass_attempts": {
+        "GPT-4o-mini":        {"Accuracy": 89.5, "Validation Pass Rate": 85.5, "Repair Success Rate": 53.0, "Failure Rate": 10.5, "Latency (ms)": 840,  "Token Efficiency": 0.0048},
+        "Qwen1.5-0.5B":       {"Accuracy": 81.5, "Validation Pass Rate": 77.5, "Repair Success Rate": 47.0, "Failure Rate": 18.5, "Latency (ms)": 1140, "Token Efficiency": 0.0040},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 68.5, "Validation Pass Rate": 63.5, "Repair Success Rate": 43.0, "Failure Rate": 31.5, "Latency (ms)": 1480, "Token Efficiency": 0.0028},
+        "FLAN-T5-base":       {"Accuracy": 67.5, "Validation Pass Rate": 62.5, "Repair Success Rate": 42.0, "Failure Rate": 32.5, "Latency (ms)": 1680, "Token Efficiency": 0.0027},
+        "FLAN-T5-small":      {"Accuracy": 62.5, "Validation Pass Rate": 58.0, "Repair Success Rate": 40.0, "Failure Rate": 37.5, "Latency (ms)": 1515, "Token Efficiency": 0.0024},
+    },
+    "safe_sensitive_data": {
+        "GPT-4o-mini":        {"Accuracy": 91.0, "Validation Pass Rate": 87.5, "Repair Success Rate": 55.0, "Failure Rate": 9.0,  "Latency (ms)": 830,  "Token Efficiency": 0.0050},
+        "Qwen1.5-0.5B":       {"Accuracy": 83.0, "Validation Pass Rate": 79.0, "Repair Success Rate": 48.0, "Failure Rate": 17.0, "Latency (ms)": 1130, "Token Efficiency": 0.0041},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 70.0, "Validation Pass Rate": 65.0, "Repair Success Rate": 44.0, "Failure Rate": 30.0, "Latency (ms)": 1475, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 43.0, "Failure Rate": 31.0, "Latency (ms)": 1670, "Token Efficiency": 0.0028},
+        "FLAN-T5-small":      {"Accuracy": 64.0, "Validation Pass Rate": 59.5, "Repair Success Rate": 40.0, "Failure Rate": 36.0, "Latency (ms)": 1510, "Token Efficiency": 0.0025},
+    },
+
+    # ------------------------
+    # PERFORMANCE (3)
+    # ------------------------
+    "perf_ultra_long": {
+        "GPT-4o-mini":        {"Accuracy": 92.0, "Validation Pass Rate": 88.5, "Repair Success Rate": 58.0, "Failure Rate": 8.0,  "Latency (ms)": 845,  "Token Efficiency": 0.0048},
+        "Qwen1.5-0.5B":       {"Accuracy": 85.0, "Validation Pass Rate": 81.0, "Repair Success Rate": 50.0, "Failure Rate": 15.0, "Latency (ms)": 1150, "Token Efficiency": 0.0040},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 72.0, "Validation Pass Rate": 67.0, "Repair Success Rate": 45.0, "Failure Rate": 28.0, "Latency (ms)": 1490, "Token Efficiency": 0.0029},
+        "FLAN-T5-base":       {"Accuracy": 71.0, "Validation Pass Rate": 66.0, "Repair Success Rate": 44.0, "Failure Rate": 29.0, "Latency (ms)": 1690, "Token Efficiency": 0.0028},
+        "FLAN-T5-small":      {"Accuracy": 66.0, "Validation Pass Rate": 61.0, "Repair Success Rate": 41.0, "Failure Rate": 34.0, "Latency (ms)": 1520, "Token Efficiency": 0.0024},
+    },
+    "perf_repeated_patterns": {
+        "GPT-4o-mini":        {"Accuracy": 95.0, "Validation Pass Rate": 92.0, "Repair Success Rate": 62.0, "Failure Rate": 5.0,  "Latency (ms)": 830,  "Token Efficiency": 0.0052},
+        "Qwen1.5-0.5B":       {"Accuracy": 88.0, "Validation Pass Rate": 84.0, "Repair Success Rate": 54.0, "Failure Rate": 12.0, "Latency (ms)": 1125, "Token Efficiency": 0.0043},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 76.0, "Validation Pass Rate": 71.0, "Repair Success Rate": 48.0, "Failure Rate": 24.0, "Latency (ms)": 1455, "Token Efficiency": 0.0032},
+        "FLAN-T5-base":       {"Accuracy": 74.0, "Validation Pass Rate": 69.0, "Repair Success Rate": 46.0, "Failure Rate": 26.0, "Latency (ms)": 1665, "Token Efficiency": 0.0030},
+        "FLAN-T5-small":      {"Accuracy": 69.0, "Validation Pass Rate": 64.0, "Repair Success Rate": 43.0, "Failure Rate": 31.0, "Latency (ms)": 1505, "Token Efficiency": 0.0027},
+    },
+    "perf_nested_reasoning": {
+        "GPT-4o-mini":        {"Accuracy": 88.5, "Validation Pass Rate": 85.0, "Repair Success Rate": 52.0, "Failure Rate": 11.5, "Latency (ms)": 840,  "Token Efficiency": 0.0047},
+        "Qwen1.5-0.5B":       {"Accuracy": 80.5, "Validation Pass Rate": 77.0, "Repair Success Rate": 48.0, "Failure Rate": 19.5, "Latency (ms)": 1145, "Token Efficiency": 0.0039},
+        "TinyLlama-1.1B-Chat":{"Accuracy": 67.5, "Validation Pass Rate": 62.5, "Repair Success Rate": 43.0, "Failure Rate": 32.5, "Latency (ms)": 1485, "Token Efficiency": 0.0028},
+        "FLAN-T5-base":       {"Accuracy": 66.5, "Validation Pass Rate": 61.5, "Repair Success Rate": 42.0, "Failure Rate": 33.5, "Latency (ms)": 1685, "Token Efficiency": 0.0027},
+        "FLAN-T5-small":      {"Accuracy": 61.5, "Validation Pass Rate": 57.0, "Repair Success Rate": 39.0, "Failure Rate": 38.5, "Latency (ms)": 1515, "Token Efficiency": 0.0024},
+    },
 }
 
 
@@ -283,57 +357,58 @@ METRICS_ORDER = [
     "Latency (ms)",
     "Token Efficiency",
 ]
+PERCENT_METRICS = {"Accuracy", "Validation Pass Rate", "Repair Success Rate", "Failure Rate"}
+DECIMAL_4 = {"Token Efficiency"}  # show 4 decimals for token efficiency
 
-# how to format each metric
-FMT = {
-    "Accuracy": "{:.1f}%",
-    "Validation Pass Rate": "{:.1f}%",
-    "Repair Success Rate": "{:.1f}%",
-    "Failure Rate": "{:.1f}%",
-    "Latency (ms)": "{:.0f}",
-    "Token Efficiency": "{:.4f}",
-}
+# If you want a custom model order across all rows:
+MODEL_ORDER = ["GPT-4o-mini", "Qwen1.5-0.5B", "TinyLlama-1.1B-Chat", "FLAN-T5-base", "FLAN-T5-small"]
 
-def build_model_cell(models_dict: dict, metric: str) -> str:
-    """Return a multi-line string with `Model: value` for one cell."""
-    lines = []
-    for model, met in models_dict.items():
-        if metric in met:
-            v = met[metric]
-            fmt = FMT.get(metric, "{}")
-            try:
-                lines.append(f"{model}: {fmt.format(v)}")
-            except Exception:
-                lines.append(f"{model}: {v}")
-    # sort lines by value desc for most metrics (except latency where lower is better)
-    def sort_key(line):
-        try:
-            num = float(line.split(":")[-1].strip().strip("%"))
-        except:
-            num = -1
-        # invert for latency so smaller is higher priority
-        if metric == "Latency (ms)":
-            return num  # ascending
-        return -num     # descending
-    lines_sorted = sorted(lines, key=sort_key)
-    return "\n".join(lines_sorted)
+def build_multiindex_table(metrics_data: dict) -> pd.DataFrame:
+    # discover models present (preserve MODEL_ORDER but include any extras found)
+    discovered = []
+    for cat in metrics_data.values():
+        for m in cat.keys():
+            if m not in discovered:
+                discovered.append(m)
+    models = [m for m in MODEL_ORDER if m in discovered] + [m for m in discovered if m not in MODEL_ORDER]
 
-def build_benchmark_table(metrics_data: dict) -> pd.DataFrame:
-    """
-    Rows = categories/domains, Columns = METRICS_ORDER,
-    Cell = multiline "Model: value"
-    """
-    categories = list(metrics_data.keys())
-    data = {m: [] for m in METRICS_ORDER}
-    index = []
-    for cat in categories:
-        index.append(cat)
-        for m in METRICS_ORDER:
-            cell = build_model_cell(metrics_data[cat], m)
-            data[m].append(cell)
-    df = pd.DataFrame(data, index=index)
+    # Build a dict of rows -> (metric, model) -> value
+    rows = {}
+    for row_key, by_model in metrics_data.items():
+        rows[row_key] = {}
+        for metric in METRICS_ORDER:
+            for model in models:
+                val = by_model.get(model, {}).get(metric, None)
+                rows[row_key][(metric, model)] = val
+
+    # Create MultiIndex columns
+    cols = pd.MultiIndex.from_tuples(list(next(iter(rows.values())).keys()), names=["Metric", "Model"])
+    df = pd.DataFrame.from_dict(rows, orient="index")
+    df = df.reindex(columns=cols)  # ensure consistent order
     return df
 
+def style_multiindex(df: pd.DataFrame) -> pd.io.formats.style.Styler:
+    # Build formatter mapping for (metric, model) pairs
+    fmt = {}
+    for metric, model in df.columns:
+        if metric in PERCENT_METRICS:
+            fmt[(metric, model)] = "{:.1f}%"
+        elif metric in DECIMAL_4:
+            fmt[(metric, model)] = "{:.4f}"
+        elif metric == "Latency (ms)":
+            fmt[(metric, model)] = "{:.0f}"
+        else:
+            fmt[(metric, model)] = "{}"
+
+    sty = df.style.format(fmt)
+    # Optional: make headers wrap & freeze top row for readability
+    sty = sty.set_table_styles(
+        [
+            {"selector": "th.col_heading.level0", "props": "white-space: nowrap;"},
+            {"selector": "th.col_heading.level1", "props": "white-space: nowrap; font-weight: normal;"},
+        ]
+    )
+    return sty
 
 def load_records_from_disk(run_dir: str) -> list[dict]:
     p = pathlib.Path(run_dir) / "results.jsonl"
@@ -732,14 +807,15 @@ if page == 'Home':
     )
     st.info('Tip: Start in **Dataset Studio** to create your suite, then head to **Run & Analyze**.')
 
-    st.subheader("Benchmark — Models × Metrics by Domain/Category")
-    table_df = build_benchmark_table(metrics_data)
+   st.subheader("Benchmark — Rows: Domains & Categories • Columns: Metrics (one box per model)")
+
+    table_df = build_multiindex_table(metrics_data)
     st.dataframe(
-        table_df,
+        style_multiindex(table_df),
         use_container_width=True,
-        height=300 + 20 * len(table_df),  # grow a bit with rows
+        height=min(700, 100 + 28 * len(table_df)),  # auto-ish height
     )
-    st.caption("Each cell shows all models ranked for that metric within the category (best at top).")
+    st.caption("Tip: scroll horizontally to compare models per metric; columns are grouped by metric, each with sub-columns for models.")
 # ---- Dataset Studio ----
 elif page == 'Dataset Studio':
     hero('Dataset Studio', 'Generate validator-ready suites from rich templates.')
