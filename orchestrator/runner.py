@@ -12,6 +12,7 @@ from validators.format_explainer import get_format_explanation
 from validators.domain.financial_validator import validate_fin_invoice_json
 from validators.domain.healthcare_validator import validate_hc_claim_csv
 from validators.domain.legal_validator import validate_legal_html_snippet
+from configs.expect_registry import expect_for_family
 
 
 # ---------- helpers ----------
@@ -108,70 +109,85 @@ async def run_experiment(
         prompt = case["prompt"]
         attempt = 0
         result_obj = None
-
+    
+        # (optional but recommended) if you added the canonical expect registry:
+        from configs.expect_registry import expect_for_family
+        fam = case.get("family") or ""
+        canon = expect_for_family(fam)
+        if canon:
+            case["expect"] = canon
+    
+        expect = case.get("expect", {}) or {}
+        expects_json = (expect.get("type") == "json")
+    
         async with sem:
             # ---- self-consistency for JSON family (optional) ----
-            async def worker(case: Dict[str, Any], model_key: str):
-                adapter = adapters[model_key]
-                prompt = case["prompt"]
-                attempt = 0
-                result_obj = None
-
-                # NEW: compute per-case JSON mode
-                expect = case.get("expect", {}) or {}
-                expects_json = (expect.get("type") == "json")
-
-                async with sem:
-                    # ---- self-consistency for JSON family (optional) ----
-                    if case.get("expect", {}).get("type") == "json" and sc_json_n > 1:
-                        texts = []
-                        errs = []
-                        for _ in range(sc_json_n):
-                            attempt += 1
-                            start_wall = time.time()
-                            try:
-                                # PASS force_json ONLY when the case expects JSON
-                                res_n = await asyncio.wait_for(
-                                    _call_model(adapter, prompt, force_json=expects_json),
-                                    timeout=timeout_s
-                                )
-                            except asyncio.TimeoutError:
-                                res_n = type("Result", (), {})()
-                                res_n.text, res_n.usage, res_n.error = "", {}, "timeout"
-                                res_n.latency_ms = int((time.time() - start_wall) * 1000)
-                            if res_n.error and ("429" in str(res_n.error) or "rate limit" in str(res_n.error).lower() or "quota" in str(res_n.error).lower()):
-                                if attempt <= retries:
-                                    await asyncio.sleep(min(_parse_retry_delay_seconds(str(res_n.error)), 5))
-                                    continue
-                            if res_n.text: texts.append(res_n.text)
-                            if res_n.error: errs.append(str(res_n.error))
-
+            if expects_json and sc_json_n > 1:
+                texts, errs = [], []
+                for _ in range(sc_json_n):
+                    attempt += 1
+                    start_wall = time.time()
+                    try:
+                        res_n = await asyncio.wait_for(
+                            _call_model(adapter, prompt, force_json=expects_json),
+                            timeout=timeout_s
+                        )
+                    except asyncio.TimeoutError:
+                        res_n = type("Result", (), {})()
+                        res_n.text, res_n.usage, res_n.error = "", {}, "timeout"
+                        res_n.latency_ms = int((time.time() - start_wall) * 1000)
+    
+                    # simple 429 retry
+                    if res_n.error and ("429" in str(res_n.error) or "rate limit" in str(res_n.error).lower() or "quota" in str(res_n.error).lower()):
+                        if attempt <= retries:
+                            await asyncio.sleep(min(_parse_retry_delay_seconds(str(res_n.error)), 5))
+                            continue
+    
+                    if res_n.text:
+                        texts.append(res_n.text)
+                    if res_n.error:
+                        errs.append(str(res_n.error))
+    
+                # choose first valid by validator; else majority string
+                chosen_text = ""
+                for t in texts:
+                    ok, _, _ = validate_by_case(t, case)
+                    if ok:
+                        chosen_text = t
+                        break
+                if not chosen_text and texts:
+                    from collections import Counter
+                    chosen_text = Counter([t.strip() for t in texts]).most_common(1)[0][0]
+    
+                result_obj = type("Result", (), {})()
+                result_obj.text = chosen_text
+                result_obj.usage = {}
+                result_obj.latency_ms = 0
+                result_obj.error = errs[0] if (not chosen_text and errs) else None
+    
             # ---- single call path ----
             if result_obj is None:
-                expect = case.get("expect", {}) or {}
-                expects_json = (expect.get("type") == "json")
                 while True:
                     attempt += 1
                     start_wall = time.time()
                     try:
-                        # PASS force_json ONLY when the case expects JSON
-                        expects_json = (expect.get("type") == "json")
                         res = await asyncio.wait_for(
-                            _call_model(adapter, prompt),
+                            _call_model(adapter, prompt, force_json=expects_json),  # <-- pass expects_json here
                             timeout=timeout_s
                         )
                     except asyncio.TimeoutError:
                         res = type("Result", (), {})()
                         res.text, res.usage, res.error = "", {}, "timeout"
                         res.latency_ms = int((time.time() - start_wall) * 1000)
+    
                     if res.error and ("429" in str(res.error) or "rate limit" in str(res.error).lower() or "quota" in str(res.error).lower()):
                         if attempt <= retries:
                             await asyncio.sleep(min(_parse_retry_delay_seconds(str(res.error)), 5))
                             continue
                     result_obj = res
                     break
-
-        # Base record
+    
+        # ---- base record (unchanged) ----
         record: Dict[str, Any] = {
             "id": str(uuid.uuid4()),
             "case_id": case.get("id"),
@@ -185,7 +201,6 @@ async def run_experiment(
             "taxonomy": None,
             "strategies_applied": [],
             "final_status": "unknown",
-            # new for effectiveness
             "status_before": "unknown",
             "taxonomy_before": None,
             "explanations": {},
