@@ -9,6 +9,8 @@
 
 from __future__ import annotations
 import os
+
+os.environ["TRANSFORMERS_NO_DEVICE_MAP"] = "1"
 import json
 import time
 from datetime import datetime
