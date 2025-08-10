@@ -712,7 +712,7 @@ else:
         st.info('No completed runs yet.')
         st.stop()
 
-    tab1, tab2, tab3 = st.tabs(['Run Summary', 'Ablation (OFF vs ON)', 'Drill-down'])
+    tab1, tab2, tab3, tab4 = st.tabs(['Run Summary', 'Ablation (OFF vs ON)', 'Drill-down', 'Deeper Analysis'])
 
     with tab1:
         sel_run = st.selectbox('Select run dir', options=run_dirs, index=len(run_dirs)-1, key='rs')
