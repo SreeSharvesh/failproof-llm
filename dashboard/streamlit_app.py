@@ -422,8 +422,6 @@ if page == 'Home':
     hero('FailProof LLM — Stress‑test AI with Edge Cases', 'Generate adversarial suites → run across models → analyze, explain, and harden.')
     st.markdown('     ')
 
-    st.write(param.device)
-
     
     st.markdown(
         """
@@ -557,6 +555,8 @@ else:
 
     params = {"temperature": float(temperature), "max_tokens": int(max_tokens)}
     adapters = build_adapters_from_ui(model_provider, model_name, params)
+    st.write(f"Model device: {next(self.model.parameters()).device}")
+
 
     # Run buttons
     if do_off:
