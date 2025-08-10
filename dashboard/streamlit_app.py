@@ -38,7 +38,7 @@ HF_PRESETS = [
     "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     "google/flan-t5-small",
     "google/flan-t5-base",
-    "qwen1.5-0.5b-chat",
+    "Qwen/Qwen1.5-0.5B-Chat",
 ]
 
 # ---------- Theming / UX helpers ----------
