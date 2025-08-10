@@ -10,6 +10,7 @@
 from __future__ import annotations
 import os
 import pathlib
+from collections import defaultdict
 os.environ["TRANSFORMERS_NO_DEVICE_MAP"] = "1"
 import json
 import time
