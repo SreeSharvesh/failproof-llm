@@ -37,10 +37,12 @@ class HFAdapter:
         # STRICT: load model without accelerate/lazy init
         from_pretrained_kwargs = dict(
             torch_dtype=torch_dtype,
-            low_cpu_mem_usage=False,   # critical: avoid meta tensors
-            device_map=None,           # critical: avoid accelerate meta sharding
+            low_cpu_mem_usage=False,
+            device_map=self.device,  # Force all weights to load on the specified device.
             trust_remote_code=False,
         )
+
+
         if self.is_seq2seq:
             self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name, **from_pretrained_kwargs)
         else:
