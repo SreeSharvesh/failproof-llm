@@ -9,7 +9,7 @@
 
 from __future__ import annotations
 import os
-
+import pathlib
 os.environ["TRANSFORMERS_NO_DEVICE_MAP"] = "1"
 import json
 import time
@@ -687,7 +687,6 @@ else:
         with st.spinner('Running OFF (repairs disabled)...'):
             run_experiment_sync(cases, adapters, run_dir, cfg)
         st.success(f"OFF run complete → {run_dir}")
-        off_dir = run_dir
         remember_run(off_dir)
 
     if do_on:
