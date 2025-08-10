@@ -446,14 +446,30 @@ elif page == 'Dataset Studio':
     st.caption("Pick a category template, choose size, and generate a JSONL suite you can immediately run.")
 
     # Discover templates on the fly
+    # Discover templates
     templates = discover_templates("templates")
+    domain_opts = ["All", "Healthcare", "Legal", "Financial"]
+    sel_domain = st.selectbox("Domain", domain_opts, index=0)
+    
     if not templates:
         st.warning("No templates found under ./templates. Add .md files (category prompts) to proceed.")
         st.stop()
-
-    # Build selection list
-    opts = {f"{t['group']} / {t['key']}": t for t in templates}
+    
+    def _domain_of(t):
+        p = t["path"].lower()
+        if "/domains/healthcare/" in p: return "Healthcare"
+        if "/domains/legal/" in p: return "Legal"
+        if "/domains/financial/" in p: return "Financial"
+        return "All"
+    
+    # Apply domain filter
+    filtered = [t for t in templates if sel_domain == "All" or _domain_of(t) == sel_domain]
+    
+    # Build selection list (only from filtered)
+    opts = {f"{t['group']} / {t['key']}": t for t in filtered}
     sel = st.selectbox("Category template", options=list(opts.keys()))
+    
+    # Selected template object
     t = opts[sel]
 
     # Let user edit friendly labels
